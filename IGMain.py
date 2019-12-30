@@ -1,6 +1,7 @@
-print("*Enter full path of files if not in same directory")
-followersFile=input("Enter Followers file name : ")
-followingFile=input("Enter Following file name : ")
-
-
-
+import IGdb
+import IGprocessing
+x=input("enter 1 if new files else 0")
+if(x=='1'):
+    IGdb.update()
+else:
+    IGprocessing.test()
