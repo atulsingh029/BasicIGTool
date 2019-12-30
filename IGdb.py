@@ -54,10 +54,6 @@ def update():
             if (temp2 == 0):
                 print("error occurred at update level for following")
                 exit()
-        temp3=nullSet(i)
-        if(temp3==0):
-            print("null setting failed")
-            exit()
     return 1
 
 
@@ -112,21 +108,4 @@ def newUserDetailsFOLLOWING(username):
         myconn.rollback()
         return 0
 
-
-def nullSet(username):
-    try:
-        myconn = mysql.connector.connect(host="localhost", user="root", passwd="admin")
-    except:
-        return 0
-    try:
-        cur = myconn.cursor()
-        cur.execute("use instadb")
-        cur.execute("update instadata set follower=false where follower=null")
-        cur.execute("update instadata set following=false where following=null")
-        myconn.commit()
-        myconn.close()
-        return 1
-    except:
-        myconn.rollback()
-        return 0
 
