@@ -123,6 +123,9 @@ def unfollowersRecord(followersFile,followingFile):
 def refollowersRecord(followersFile,followingFile):
     data=IGprocessing.basicData()
     followingList=data[1] #from database
+    for it in data[0]:
+        followingList.append(it)
+    followingList=set(followingList)
     followerListFromFil=fileHandling.fileHandling(followersFile,followingFile)
     followerListFromFile=followerListFromFil[0] #from file
     for k in followerListFromFile:
