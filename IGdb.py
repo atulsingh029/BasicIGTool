@@ -1,6 +1,5 @@
 #create table instadata (username varchar(100) primary key , follower boolean,following boolean, followdate date not null,unfollowdate date default null );
 import mysql.connector
-
 import IGprocessing
 import fileHandling
 def getAll():
@@ -18,13 +17,9 @@ def getAll():
     except:
         myconn.rollback()
         return 0
-
-
 def fileInput(followersFile,followingFile):
     fileHandlingData=fileHandling.fileHandling(followersFile,followingFile)
     return fileHandlingData
-
-
 def update(followersFile,followingFile):
     fileHandlingData=fileInput(followersFile,followingFile)
     allusernames_fromnewfile=[]
@@ -54,8 +49,6 @@ def update(followersFile,followingFile):
                 print("error occurred at update level for following")
                 exit()
     return 1
-
-
 def addNewUsername(incominguser):
     try:
         myconn = mysql.connector.connect(host="localhost", user="root", passwd="admin")
@@ -72,8 +65,6 @@ def addNewUsername(incominguser):
     except:
         myconn.rollback()
         return 0
-
-
 def newUserDetailsFOLLOWERS(username):
     try:
         myconn = mysql.connector.connect(host="localhost", user="root", passwd="admin")
@@ -89,8 +80,6 @@ def newUserDetailsFOLLOWERS(username):
     except:
         myconn.rollback()
         return 0
-
-
 def newUserDetailsFOLLOWING(username):
     try:
         myconn = mysql.connector.connect(host="localhost", user="root", passwd="admin")
@@ -106,8 +95,6 @@ def newUserDetailsFOLLOWING(username):
     except:
         myconn.rollback()
         return 0
-
-
 def unfollowersRecord(followersFile,followingFile):
     data=IGprocessing.basicData()
     followerList=data[0]   #in exixting database
@@ -125,6 +112,7 @@ def unfollowersRecord(followersFile,followingFile):
                 cur = myconn.cursor()
                 cur.execute("use instadb")
                 cur.execute("update instadata set follower=false where username = '" + i + "'")
+                cur.execute("update instadata set follower=false,unfollowdate=sysdate() where username = '" + i + "'")
                 print("Unfollowed :"+i)
                 myconn.commit()
                 myconn.close()
@@ -132,8 +120,6 @@ def unfollowersRecord(followersFile,followingFile):
             except:
                 myconn.rollback()
                 return 0
-
-
 def refollowersRecord(followersFile,followingFile):
     data=IGprocessing.basicData()
     followingList=data[1] #from database
@@ -149,17 +135,10 @@ def refollowersRecord(followersFile,followingFile):
                 cur = myconn.cursor()
                 cur.execute("use instadb")
                 cur.execute("update instadata set follower=true where username = '" + k + "'")
+                cur.execute("update instadata set follower=true,unfollowdate=null where username = '" + k + "'")
                 myconn.commit()
                 myconn.close()
                 return 1
             except:
                 myconn.rollback()
                 return 0
-
-
-
-
-
-
-
-
