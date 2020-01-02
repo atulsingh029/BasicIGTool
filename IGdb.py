@@ -1,5 +1,7 @@
 #create table instadata (username varchar(100) primary key , follower boolean,following boolean, followdate date not null,unfollowdate date default null );
 import mysql.connector
+
+import IGprocessing
 import fileHandling
 def getAll():
     try:
@@ -18,16 +20,13 @@ def getAll():
         return 0
 
 
-def fileInput():
-    print("*Enter full path of files if not in same directory")
-    followersFile=input("Enter Followers file name : ")
-    followingFile=input("Enter Following file name : ")
+def fileInput(followersFile,followingFile):
     fileHandlingData=fileHandling.fileHandling(followersFile,followingFile)
     return fileHandlingData
 
 
-def update():
-    fileHandlingData=fileInput()
+def update(followersFile,followingFile):
+    fileHandlingData=fileInput(followersFile,followingFile)
     allusernames_fromnewfile=[]
     for n1 in fileHandlingData[0]:
         allusernames_fromnewfile.append(n1)
@@ -107,5 +106,60 @@ def newUserDetailsFOLLOWING(username):
     except:
         myconn.rollback()
         return 0
+
+
+def unfollowersRecord(followersFile,followingFile):
+    data=IGprocessing.basicData()
+    followerList=data[0]   #in exixting database
+    followerListFromFil=fileHandling.fileHandling(followersFile,followingFile)
+    followerListFromFile=followerListFromFil[0]
+    for i in followerList:
+        if(i in followerListFromFile):
+            pass
+        else:
+            try:
+                myconn = mysql.connector.connect(host="localhost", user="root", passwd="admin")
+            except:
+                return 0
+            try:
+                cur = myconn.cursor()
+                cur.execute("use instadb")
+                cur.execute("update instadata set follower=false where username = '" + i + "'")
+                print("Unfollowed :"+i)
+                myconn.commit()
+                myconn.close()
+                return 1
+            except:
+                myconn.rollback()
+                return 0
+
+
+def refollowersRecord(followersFile,followingFile):
+    data=IGprocessing.basicData()
+    followingList=data[1] #from database
+    followerListFromFil=fileHandling.fileHandling(followersFile,followingFile)
+    followerListFromFile=followerListFromFil[0] #from file
+    for k in followerListFromFile:
+        if(k in followingList):
+            try:
+                myconn = mysql.connector.connect(host="localhost", user="root", passwd="admin")
+            except:
+                return 0
+            try:
+                cur = myconn.cursor()
+                cur.execute("use instadb")
+                cur.execute("update instadata set follower=true where username = '" + k + "'")
+                myconn.commit()
+                myconn.close()
+                return 1
+            except:
+                myconn.rollback()
+                return 0
+
+
+
+
+
+
 
 
