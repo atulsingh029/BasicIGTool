@@ -124,7 +124,7 @@ def unfollowersRecord(followersFile,followingFile):
             try:
                 cur = myconn.cursor()
                 cur.execute("use instadb")
-                cur.execute("update instadata set follower=false,unfollowdate=sysdate() where username = '" + i + "'")
+                cur.execute("update instadata set follower=false where username = '" + i + "'")
                 print("Unfollowed :"+i)
                 myconn.commit()
                 myconn.close()
@@ -148,7 +148,7 @@ def refollowersRecord(followersFile,followingFile):
             try:
                 cur = myconn.cursor()
                 cur.execute("use instadb")
-                cur.execute("update instadata set follower=true,unfollowdate=null where username = '" + k + "'")
+                cur.execute("update instadata set follower=true where username = '" + k + "'")
                 myconn.commit()
                 myconn.close()
                 return 1
