@@ -1,5 +1,4 @@
 import IGdb
-import fileHandling
 def basicData():
     followersList=[]
     followingList=[]
@@ -23,6 +22,9 @@ def dataSet():
     return followerset,followingset,mutual,followersOnly,followingOnly
 def test():
     data = dataSet()
+    print("follower no : " + str(len(data[0])))
+    print("following no : " + str(len(data[1])))
+    print("mutual no : " + str(len(data[2])))
     print("followers :")
     print(data[0])
     print("following :")

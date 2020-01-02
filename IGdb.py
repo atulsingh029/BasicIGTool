@@ -97,7 +97,7 @@ def newUserDetailsFOLLOWING(username):
         return 0
 def unfollowersRecord(followersFile,followingFile):
     data=IGprocessing.basicData()
-    followerList=data[0]   #in exixting database
+    followerList=data[0]
     followerListFromFil=fileHandling.fileHandling(followersFile,followingFile)
     followerListFromFile=followerListFromFil[0]
     for i in followerList:
@@ -111,25 +111,20 @@ def unfollowersRecord(followersFile,followingFile):
             try:
                 cur = myconn.cursor()
                 cur.execute("use instadb")
-                cur.execute("update instadata set follower=false where username = '" + i + "'")
                 cur.execute("update instadata set follower=false,unfollowdate=sysdate() where username = '" + i + "'")
-                print("Unfollowed :"+i)
+                print("Unfollowed You :"+i)
                 myconn.commit()
                 myconn.close()
-                return 1
+                #return 1
             except:
                 myconn.rollback()
                 return 0
+
+
 def refollowersRecord(followersFile,followingFile):
-    data=IGprocessing.basicData()
-    followingList=data[1] #from database
-    for it in data[0]:
-        followingList.append(it)
-    followingList=set(followingList)
     followerListFromFil=fileHandling.fileHandling(followersFile,followingFile)
-    followerListFromFile=followerListFromFil[0] #from file
+    followerListFromFile=followerListFromFil[0]
     for k in followerListFromFile:
-        if(k in followingList):
             try:
                 myconn = mysql.connector.connect(host="localhost", user="root", passwd="admin")
             except:
@@ -137,11 +132,56 @@ def refollowersRecord(followersFile,followingFile):
             try:
                 cur = myconn.cursor()
                 cur.execute("use instadb")
-                cur.execute("update instadata set follower=true where username = '" + k + "'")
                 cur.execute("update instadata set follower=true,unfollowdate=null where username = '" + k + "'")
                 myconn.commit()
                 myconn.close()
-                return 1
             except:
                 myconn.rollback()
                 return 0
+    return 1
+
+
+def refollowingRecord(followersFile,followingFile):
+    followerListFromFil=fileHandling.fileHandling(followersFile,followingFile)
+    followerListFromFile=followerListFromFil[1]
+    for k in followerListFromFile:
+            try:
+                myconn = mysql.connector.connect(host="localhost", user="root", passwd="admin")
+            except:
+                return 0
+            try:
+                cur = myconn.cursor()
+                cur.execute("use instadb")
+                cur.execute("update instadata set following=true where username = '" + k + "'")
+                myconn.commit()
+                myconn.close()
+            except:
+                myconn.rollback()
+                return 0
+    return 1
+
+
+def unfollowingRecord(followersFile, followingFile):
+    data = IGprocessing.basicData()
+    followerList = data[1]
+    followerListFromFil = fileHandling.fileHandling(followersFile, followingFile)
+    followerListFromFile = followerListFromFil[1]
+    for i in followerList:
+        if (i in followerListFromFile):
+            pass
+        else:
+            try:
+                myconn = mysql.connector.connect(host="localhost", user="root", passwd="admin")
+            except:
+                return 0
+            try:
+                cur = myconn.cursor()
+                cur.execute("use instadb")
+                cur.execute("update instadata set following=false where username = '" + i + "'")
+                print("You Unfollowed :" + i)
+                myconn.commit()
+                myconn.close()
+            except:
+                myconn.rollback()
+                return 0
+    return 1
