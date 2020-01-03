@@ -22,6 +22,7 @@ def dataSet():
     return followerset,followingset,mutual,followersOnly,followingOnly
 def test():
     data = dataSet()
+    unfollow = IGdb.getUnfollow()
     print("")
     print("Followers : " + str(len(data[0]))+"\t",end="\t")
     print("Following : " + str(len(data[1]))+"\t",end="\t")
@@ -29,6 +30,7 @@ def test():
     print("")
     print("Followers Only : " + str(len(data[3])) + "\t", end='\t')
     print("Following Only : " + str(len(data[4])) + "\t", end='\t')
+    print("Unfollowers : " + str(len(unfollow)) + "\t", end='\t')
     print("")
     print("")
     print("Followers List :")
@@ -41,5 +43,14 @@ def test():
     print(data[3])
     print("following who don't follow you back :")
     print(data[4])
+
+
+    print("Unfollower   Date ")
+    for i in unfollow:
+        res=i[0]
+        size=len(res)
+        res=res[0:size-1]
+        print(res,end=" ")
+        print(i[1])
 
 

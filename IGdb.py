@@ -55,7 +55,7 @@ def addNewUsername(incominguser):
         return 0
     try:
         cur = myconn.cursor()
-        sql="insert into instadata(username, follower, following, followdate) values('"+incominguser+"',null,null,null)"
+        sql="insert into instadata(username, follower, following, followdate) values('"+incominguser+"',null,null,date())"
         cur.execute(sql)
         myconn.commit()
         myconn.close()
@@ -106,7 +106,7 @@ def unfollowersRecord(followersFile,followingFile):
                 return 0
             try:
                 cur = myconn.cursor()
-                cur.execute("update instadata set follower=0,unfollowdate=null where username = '" + i + "'")
+                cur.execute("update instadata set follower=0,unfollowdate=date() where username = '" + i + "'")
                 print("Unfollowed You :"+i)
                 myconn.commit()
                 myconn.close()
@@ -177,3 +177,18 @@ def unfollowingRecord(followersFile, followingFile):
                 myconn.rollback()
                 return 0
     return 1
+def getUnfollow():
+    try:
+        myconn=sqlite3.connect("data.db")
+    except:
+        return 0
+    try:
+        cur=myconn.cursor()
+        cur.execute("select username,unfollowdate from instadata where follower=0")
+        result=cur.fetchall()
+        myconn.commit()
+        myconn.close()
+    except:
+        myconn.rollback()
+        return 0
+    return result

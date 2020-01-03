@@ -24,6 +24,8 @@ if (x == '1'):
         IGdb.unfollowingRecord(followersFile, followingFile)
         IGdb.refollowingRecord(followersFile, followingFile)
         IGprocessing.test()
+
+        input("...")
 elif(x == "Z"):
     try:
         myconn = sqlite3.connect("data.db")
@@ -33,9 +35,13 @@ elif(x == "Z"):
         myconn.commit()
         myconn.close()
         print("Database cleared.")
+        input("...")
 
     except:
         myconn.rollback()
         print("<fatal error> Developer fix required.")
+        input("...")
+
 else:
         IGprocessing.test()
+        input("...")
