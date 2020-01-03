@@ -1,15 +1,14 @@
 #create table instadata (username varchar(100) primary key , follower boolean,following boolean, followdate date not null,unfollowdate date default null );
-import mysql.connector
+import sqlite3
 import IGprocessing
 import fileHandling
 def getAll():
     try:
-        myconn = mysql.connector.connect(host="localhost", user="root", passwd="admin")
+        myconn = sqlite3.connect("data.db")
     except:
         return 0
     try:
         cur = myconn.cursor()
-        cur.execute("use instadb")
         cur.execute("select username,follower,following from instadata")
         resultReturn=cur.fetchall()
         myconn.close()
@@ -51,13 +50,12 @@ def update(followersFile,followingFile):
     return 1
 def addNewUsername(incominguser):
     try:
-        myconn = mysql.connector.connect(host="localhost", user="root", passwd="admin")
+        myconn = sqlite3.connect("data.db")
     except:
         return 0
     try:
         cur = myconn.cursor()
-        cur.execute("use instadb")
-        sql="insert into instadata(username, follower, following, followdate) values('"+incominguser+"',null,null,sysdate())"
+        sql="insert into instadata(username, follower, following, followdate) values('"+incominguser+"',null,null,null)"
         cur.execute(sql)
         myconn.commit()
         myconn.close()
@@ -67,13 +65,12 @@ def addNewUsername(incominguser):
         return 0
 def newUserDetailsFOLLOWERS(username):
     try:
-        myconn = mysql.connector.connect(host="localhost", user="root", passwd="admin")
+        myconn = sqlite3.connect("data.db")
     except:
         return 0
     try:
         cur = myconn.cursor()
-        cur.execute("use instadb")
-        cur.execute("update instadata set follower=true where username = '"+username+"'")
+        cur.execute("update instadata set follower=1 where username = '"+username+"'")
         myconn.commit()
         myconn.close()
         return 1
@@ -82,13 +79,12 @@ def newUserDetailsFOLLOWERS(username):
         return 0
 def newUserDetailsFOLLOWING(username):
     try:
-        myconn = mysql.connector.connect(host="localhost", user="root", passwd="admin")
+        myconn = sqlite3.connect("data.db")
     except:
         return 0
     try:
         cur = myconn.cursor()
-        cur.execute("use instadb")
-        cur.execute("update instadata set following=true where username = '"+username+"'")
+        cur.execute("update instadata set following=1 where username = '"+username+"'")
         myconn.commit()
         myconn.close()
         return 1
@@ -105,20 +101,19 @@ def unfollowersRecord(followersFile,followingFile):
             pass
         else:
             try:
-                myconn = mysql.connector.connect(host="localhost", user="root", passwd="admin")
+                myconn = sqlite3.connect("data.db")
             except:
                 return 0
             try:
                 cur = myconn.cursor()
-                cur.execute("use instadb")
-                cur.execute("update instadata set follower=false,unfollowdate=sysdate() where username = '" + i + "'")
+                cur.execute("update instadata set follower=0,unfollowdate=null where username = '" + i + "'")
                 print("Unfollowed You :"+i)
                 myconn.commit()
                 myconn.close()
-                #return 1
             except:
                 myconn.rollback()
                 return 0
+    return 1
 
 
 def refollowersRecord(followersFile,followingFile):
@@ -126,13 +121,12 @@ def refollowersRecord(followersFile,followingFile):
     followerListFromFile=followerListFromFil[0]
     for k in followerListFromFile:
             try:
-                myconn = mysql.connector.connect(host="localhost", user="root", passwd="admin")
+                myconn = sqlite3.connect("data.db")
             except:
                 return 0
             try:
                 cur = myconn.cursor()
-                cur.execute("use instadb")
-                cur.execute("update instadata set follower=true,unfollowdate=null where username = '" + k + "'")
+                cur.execute("update instadata set follower=1,unfollowdate=null where username = '" + k + "'")
                 myconn.commit()
                 myconn.close()
             except:
@@ -146,13 +140,12 @@ def refollowingRecord(followersFile,followingFile):
     followerListFromFile=followerListFromFil[1]
     for k in followerListFromFile:
             try:
-                myconn = mysql.connector.connect(host="localhost", user="root", passwd="admin")
+                myconn = sqlite3.connect("data.db")
             except:
                 return 0
             try:
                 cur = myconn.cursor()
-                cur.execute("use instadb")
-                cur.execute("update instadata set following=true where username = '" + k + "'")
+                cur.execute("update instadata set following=1 where username = '" + k + "'")
                 myconn.commit()
                 myconn.close()
             except:
@@ -171,13 +164,12 @@ def unfollowingRecord(followersFile, followingFile):
             pass
         else:
             try:
-                myconn = mysql.connector.connect(host="localhost", user="root", passwd="admin")
+                myconn = sqlite3.connect("data.db")
             except:
                 return 0
             try:
                 cur = myconn.cursor()
-                cur.execute("use instadb")
-                cur.execute("update instadata set following=false where username = '" + i + "'")
+                cur.execute("update instadata set following=0 where username = '" + i + "'")
                 print("You Unfollowed :" + i)
                 myconn.commit()
                 myconn.close()
